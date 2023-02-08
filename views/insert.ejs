@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>insert</title>
+</head>
+<style>
+    .sub{
+        margin-top: 20px;
+    }
+</style>
+<body>
+
+    <form action="/addemployee" method="POST">
+        <h1>User Registration</h1>
+        <!-- <input type="hidden" name="_method" value="POST"> -->
+        Full Name: <input type="text" name="name" id="fname" value=""><br><br>
+        Course: <input type="text" name="course" id="Course"><br><br>
+    
+      <label>Gender:</label>
+      <input class="l-legend" type="radio" id="gChoice1" name="gender" value="M"/>
+      <label size="20px" for="gChoice1">Male</label>
+
+      <input class="l-legend" type="radio" id="gChoice2" name="gender" value="F" />
+      <label for="gChoice2">Female</label>
+
+ <div class="sub">
+
+     <input type="submit" value="Submit Data">
+ </div>
+    </form>
+</body>
+</html>

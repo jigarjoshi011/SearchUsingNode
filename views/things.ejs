@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>things</title>
+</head>
+<style>
+    html {
+        user-select: none;
+    }
+
+    .card {
+        width: 30%;
+        display: flex;
+        flex-direction: column;
+        border: 1px rgb(4, 15, 131) solid;
+        margin-bottom: 30px;
+        border-radius: 15px;
+    }
+
+    .header {
+        height: 30%;
+        background: rgb(135, 158, 241);
+        color: white;
+        text-align: center;
+        border-radius: 15px;
+    }
+
+    .container {
+        padding: 2px 16px;
+    }
+
+    .delete {
+        background-color: #af6161;
+    }
+
+    .flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        border-radius: 15px;
+    }
+
+    a {
+        text-decoration: none;
+        background-color: black;
+        color: #fff;
+        padding: 3px;
+        border-radius: 15px;
+    }
+
+    input[type=text] {
+        border: none;
+        padding: 10px;
+        box-shadow: 1px 2px 3px;
+    }
+
+    input[type=submit] {
+        border: none;
+        padding: 10px;
+        background-color: black;
+        color: #fff
+    }
+</style>
+
+<body>
+    <form action="/get-things/<%= data[0].id %>" method="POST">
+        <table>
+            <div>
+                <tr>
+                    <div class="flex">
+
+                        <% for (let i=0; i < data.length; i++) {%>
+                            <div class="card">
+
+                                <div class="header">
+                                    <p>
+                                        Name: <%= data[i].name %>
+
+                                    </p>
+                                </div>
+                                <div class="container">
+                                    <p>Gender: <%= data[i].gender %>
+                                    </p>
+                                    <p>Course: <%= data[i].course %>
+                                    </p>
+                                    <p>Roll No: <%= data[i].id %>
+                                    </p>
+                                </div>
+                                <a href="/update-form/<%= data[i].id %>">Edit Data</a>
+                                <a href="/delete-data/<%= data[i].id %>" class="delete">Delete Data</a>
+                            </div>
+
+                            <% }%>
+                </tr>
+            </div>
+
+        </table>
+    </form>
+
+</body>
+
+</html>
