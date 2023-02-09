@@ -1,0 +1,53 @@
+ <table>
+            <tbody>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Course</th>
+                <th>Roll No</th>
+                <th>Controls</th>
+
+                <% for(let i=0 ; i<data.length;i++) { %>
+                    <tr>
+
+                        <td>
+                            <p class="c">
+                                Name: <%= data[i].name %>
+
+                            </p>
+
+
+                        </td>
+
+                        <div class="container">
+                            <td>
+                                <p>Gender: <%= data[i].gender %>
+                                </p>
+                            </td>
+                            <td>
+                                <p>Course: <%= data[i].course %>
+                                </p>
+                            </td>
+                            <td>
+                                <p>Roll No: <%= data[i].id %>
+                                </p>
+                            </td>
+                            <td>
+                                <a class="g" href="/update-form/<%= data[i].id %>">Edit Data</a>
+                                <a class="g" href="/delete-data/<%= data[i].id %>" class="delete">Delete Data</a>
+                            </td>
+
+                        </div>
+
+
+
+                    </tr>
+                    <% } %>
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <% for(let i=1 ; i<allrecords;i++) {%>
+                            <li class="page-item"><a class="page-link" href="/<%= i %>"><%=i %></a></li>
+                            <% } %>
+                        </ul>
+                    </nav>
+            </tbody>
+        </table>
