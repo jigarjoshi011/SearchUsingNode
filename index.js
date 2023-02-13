@@ -190,16 +190,20 @@ app.get('/', (req, res) => {
     let page = req.query.page || 1;
     offset = (page - 1) * limit;
 
+    let sort = req.query.sort ?? "asc";
+    //colunm name
+    let orderBy = req.query.orderby||"id";
 
 
-    conn.query(`SELECT * FROM Espark.Student limit ${offset}, ${limit}`, (err, result) => {
+
+    conn.query(`SELECT * FROM Espark.Student order by ${orderBy} ${sort} limit ${offset}, ${limit}`, (err, result) => {
         if (err) {
             return console.log(err);
         }
         else {
-            allrecords = Math.ceil(allrecords / limit);
+            allrecords = Math.ceil(allrecords / limit)+1;
 
-            res.render("things", { data: result, allrecords })
+            res.render("things", { data: result, allrecords,orderBy,sort })
         }
 
         // console.log(result);
