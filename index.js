@@ -11,8 +11,9 @@ const gender = ['M', 'F']
 // const connectDB = require('./conn/connection')
 const conn = require('./conn/connectDB');
 const { off } = require('./conn/connectDB');
+const e = require('express');
 
-PORT = 5000;
+PORT = 5005;
 
 // conn();
 
@@ -26,192 +27,92 @@ app.use(bodyParser.json());
 app.set("view engine", "ejs")
 
 
-
-async function getallEmployee() {
-    app.get('/get-data', (req, res) => {
-
-        conn.query("SELECT * FROM Espark.Student", (err, result) => {
-            if (err) {
-                console.log(err);
-            }
-            else {
-                res.render("data", { data: result })
-
-            }
-        })
-
-    })
-
-}
-getallEmployee();
-app.get("/get-data/:id", (req, res) => {
-    console.log(req.params.id);
-    const id = req.params.id
-    var query = `SELECT * FROM Espark.Student WHERE id = ${id}`;
-    conn.query(query, (err, ans) => {
-        if (err) return console.log("None");
-        console.log(ans);
-        res.render("data", { data: ans });
-
+app.get('/all', (req, res) => {
+    conn.query(`select * from Espark.Student_Express`, (err, result1) => {
+        if (err) return err.message
+        else {
+            res.render('search', { data: result1 ,currStr:''})
+        }
     })
 })
 
 
 
+app.post('/all', (req, res) => {
+    let name = "";
+    let arr = ['^', '$', '&'];
+    let currStr = req.body.search_query;
 
-app.post('/addemployee', (req, res) => {
-    console.log(req.body);
-    const { name, course, gender } = req.body
-    conn.query(`INSERT INTO Espark.Student (name,course,gender) values ('${name}','${course}','${gender}')`, (err, result) => {
-        if (err) {
-            console.log(err);
+    console.log(currStr);
+
+    var count = 0;
+    for (let i = 0; i < currStr.length; i++) {
+        if (arr.includes(currStr[i])) {
+            name += " " + currStr[i];
+            count++;
         }
         else {
-            return res.send("Data has been submitted to database")
+            name += currStr[i];
         }
-    })
-
-})
-
-app.get('/insert-data', (req, res) => {
-    res.render("insert")
-})
+    }
 
 
 
 
-function updateEmployee() {
-    app.post(`/updateEmployee/:id`, (req, res) => {
-        let idData = req.params.id
-        console.log(idData);
-        const { id, name,course } = req.body
+    let currname = name.split(" ")
 
-        conn.query(`UPDATE Espark.Student SET name='${name}', course='${course}' WHERE id = ${idData}`, (err, result) => {
-            if (err) {
-                console.log(err);
+    let queryStr = ``;
+    currname.forEach(name => {
+        if (name[0] == '^') {
+            count--;
+
+            if(count)
+            queryStr += `First_Name LIKE '${name.slice(1)}%' AND `
+            else {
+                queryStr += `First_Name LIKE '${name.slice(1)}%'`
+            }
+        }
+      
+
+
+        if (name[0] == '$') {
+            count--
+            if(count){
+                queryStr += `Last_Name Like '${name.slice(1)}%' AND `
+
             }
             else {
-                return res.send("Data has been Updated to database")
+                queryStr += `Last_Name Like '${name.slice(1)}%' `
             }
-        })
-
-    })
-
-}
-updateEmployee();
-
-
-app.get("/update-form/:id", (req, res) => {
-    console.log(req.params.id);
-    const id = req.params.id
-    var query = `SELECT * FROM Espark.Student WHERE id = ${id}`;
-    conn.query(query, (err, ans) => {
-        if (err) return console.log("None");
-        console.log(ans);
-        res.render("update", { data: ans });
-
-    })
-})
-
-function deleteEmployee() {
-
-    app.get('/deleteEmployee/:id', (req, res) => {
-
-        let idData = req.params.id
-        // console.log(idData);
-        // const { id } = req.body
-        // console.log(id);
-        conn.query(`DELETE from Espark.Student WHERE id = ${idData}`, (err, result) => {
-            if (err) {
-                console.log(err);
+            
+        }
+       
+        if (name[0] == '&') {
+            
+            count--;
+            if(count){
+                queryStr += `CITY Like '${name.slice(1)}%' AND `
             }
             else {
-                res.send("Data has been Deleted to database")
+                queryStr += `CITY Like '${name.slice(1)}%'`
             }
-        })
 
-    })
-}
-deleteEmployee();
-
-app.get("/delete-data/:id", (req, res) => {
-    // console.log(req.params.id);
-    const id = req.params.id
-    var query = `SELECT * FROM Espark.Student WHERE id = ${id}`;
-    conn.query(query, (err, ans) => {
-        if (err) return console.log("None");
-        // console.log(ans);
-        res.render("del", { id });
-
-    })
-})
-
-async function insertAll() {
-    app.get('/addemployee-many', (req, res) => {
-
-        for (let jigar = 0; jigar < 1500; jigar++) {
-
-            let randomName = Math.floor(Math.random() * name.length);
-            let courseName = Math.floor(Math.random() * course.length);
-            let genderI = Math.floor(Math.random() * gender.length);
-
-            conn.query(`INSERT INTO Espark.Student (name,course,gender) values ('${name[randomName]}','${course[courseName]}','${gender[genderI]}')`, (err, result) => {
-                if (err) {
-                    console.log(err);
-                }
-                else {
-                    console.log(result);
-                }
-
-            })
         }
+       
 
     })
-}
+    console.log(currStr);
 
-
-let allrecords = 0;
-let limit = 100
-var offset = 0;
-
-
-
-
-
-app.get('/', (req, res) => {
-
-    conn.query(`select count(*) as total_rec from Espark.Student`, (err, result1) => {
-
-        allrecords = result1[0].total_rec
-
-    })
-
-
-    let page = req.query.page || 1;
-    offset = (page - 1) * limit;
-
-    let sort = req.query.sort ?? "asc";
-    //colunm name
-    let orderBy = req.query.orderby||"id";
-
-
-
-    conn.query(`SELECT * FROM Espark.Student order by ${orderBy} ${sort} limit ${offset}, ${limit}`, (err, result) => {
-        if (err) {
-            return console.log(err);
-        }
+    conn.query(`select * from Espark.Student_Express where ${queryStr}`, (err, result) => {
+        if (err) return err.message
         else {
-            allrecords = Math.ceil(allrecords / limit)+1;
-
-            res.render("things", { data: result, allrecords,orderBy,sort })
+            res.render('search', { data: result, currStr })
         }
-
-        // console.log(result);
-
     })
 
-})
 
+
+})
 
 
 
